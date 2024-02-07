@@ -1,0 +1,273 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Image Upload API",
+      "version": "1.0.0",
+      "description": "API for uploading images to Firebase and storing their URLs in MongoDB."
+    },
+    "paths": {
+      "/create": {
+        "post": {
+          "summary": "Enter the details to store in MONGODB",
+          "description": "Create the details",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "multipart/form-data": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "firstname": { "type": "string" },
+                    "lastname": { "type": "string" },
+                    "phone": { "type": "string" },
+                    "create_date": { "type": "string" },
+                    "create_time": { "type": "string" },
+                    "wallet_amount": { "type": "string" },
+                    "wallet_amount_updatedby": { "type": "string" },
+                    "status": { "type": "string" },
+                    "email": { "type": "string" },
+                    "dob": { "type": "string" },
+                    "gender": { "type": "string" },
+                    "currency": { "type": "string" },
+                    "address": { "type": "string" },
+                    "customer_type": { "type": "string" }
+                  },
+                  "required": [
+                    "firstname",
+                    "lastname",
+                    "phone",
+                    "create_date",
+                    "create_time",
+                    "wallet_amount",
+                    "wallet_amount_updatedby",
+                    "status",
+                    "email",
+                    "dob",
+                    "gender",
+                    "currency",
+                    "address",
+                    "customer_type"
+                    
+                  ]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Data created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Data"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request. At least one photoUrl is required."
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      },
+        "/uploadimages": {
+          "post": {
+            "summary": "Upload images and store URLs in MongoDB",
+            "description": "Uploads images to Firebase and saves their URLs in MongoDB along with other data.",
+            "requestBody": {
+              "required": true,
+              "content": {
+                "multipart/form-data": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "photoUrls": {
+                        "type": "array",
+                        "items": { "type": "string", "format": "binary" },
+                        "maxItems": 5
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "responses": {
+              "201": {
+                "description": "Data created successfully",
+                "content": {
+                  "application/json": {
+                    "schema": {
+                      "$ref": "#/components/schemas/Data"
+                    }
+                  }
+                }
+              },
+              "400": {
+                "description": "Bad request. At least one photoUrl is required."
+              },
+              "500": {
+                "description": "Internal Server Error"
+              }
+            }
+          }
+        },
+        "components": {
+          "schemas": {
+            "Data": {
+              "type": "object",
+              "properties": {
+                "photoUrls": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "maxItems": 5
+                }
+              }
+            }
+          }
+        },      
+      "/update/{id}": {
+        "put": {
+          "summary": "Update user data by ID",
+          "description": "Update user data based on provided ID",
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "description": "ID of the data to update",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "firstname": {
+                      "type": "string"
+                    },
+                    "lastname": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "phone": {
+                      "type": "string"
+                    },
+                    "dob": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "gender": {
+                      "type": "string",
+                      "enum": ["male", "female", "other"]
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "address": {
+                      "type": "string"
+                    },
+                    "customer_type": {
+                      "type": "string",
+                      "enum": ["new", "existing"]
+                    }
+                  },
+                  "required": [
+                    "firstname",
+                    "lastname",
+                    "email",
+                    "phone",
+                    "dob",
+                    "gender",
+                    "currency",
+                    "address",
+                    "customer_type"
+                  ]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Successful update",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {}
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Data not found",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Internal Server Error",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Data": {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "phone": { "type": "string" },
+            "create_date": { "type": "string" },
+            "create_time": { "type": "string" },
+            "wallet_amount": { "type": "string" },
+            "wallet_amount_updatedby": { "type": "string" },
+            "status": { "type": "string" },
+            "email": { "type": "string" },
+            "dob": { "type": "string" },
+            "gender": { "type": "string" },
+            "currency": { "type": "string" },
+            "address": { "type": "string" },
+            "customer_type": { "type": "string" },
+            "photoUrls": {
+              "type": "array",
+              "items": { "type": "string" },
+              "maxItems": 5
+            }
+          }
+        }
+      }
+    }
+  }
